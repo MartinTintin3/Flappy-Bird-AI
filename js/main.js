@@ -6,7 +6,7 @@ window.onload = () => {
 	game.config.keybinds.flap = "";
 	game.start();
 
-	document.addEventListener("input", () => {
+	document.getElementById("speed").addEventListener("input", () => {
 		game.config.speed_multiplier = parseFloat(document.getElementById("speed").value).toFixed(2);
 		document.getElementById("speed-label").innerText = `${game.config.speed_multiplier}x Speed`;
 	});
@@ -17,6 +17,10 @@ window.onload = () => {
 	});
 	document.getElementById("debug-mode").addEventListener("click", () => {
 		game.config.debug_mode = document.getElementById("debug-mode").checked;
+		window.game = game.config.debug_mode ? game : undefined;
+	});
+	document.getElementById("only-show-best-bird").addEventListener("click", () => {
+		game.config.only_show_best_bird = document.getElementById("only-show-best-bird").checked;
 	});
 
 	document.getElementById("reset-btn").addEventListener("click", () => {

@@ -19,5 +19,6 @@ export class Config {
 		};
 		this.ceiling_kills = true; // If true, the bird will die if it touches the ceiling. If not, it will just bump into it
 		this.generation_size = 50; // How many birds should be in each generation
+		this.only_show_best_bird = false; // Only show the top bird of each generation
 	}
 }

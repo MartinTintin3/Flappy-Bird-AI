@@ -10,7 +10,6 @@ import { Neuroevolution } from "./neuro_evolution.js";
 	var messageName = "zero-timeout-message";
 
 	window.addEventListener("message", event => {
-		console.log("handling message");
 		if (event.source == window && event.data == messageName) {
 			event.stopPropagation();
 			if (timeouts.length > 0) {
@@ -40,7 +39,7 @@ export class Game {
 			x: -10,
 			y: -10,
 		};
-
+		this.previous_scores = [];
 		this.paused = false;
 	}
 
@@ -49,6 +48,7 @@ export class Game {
 		this.pipes = [];
 		this.nearest_pipe = null;
 
+		if(this.neuro_evolution.generations.generations.length) this.previous_scores = this.neuro_evolution.generations.generations[0].genomes.map(genome => genome.score);;
 		this.generation = this.neuro_evolution.nextGeneration();
 
 		for(let i = 0; i < this.generation.length; i++) {
@@ -196,10 +196,16 @@ export class Game {
 			this.ctx.fill();
 		}
 
-		for(let i = 0; i < this.birds.length; i++) {
-			if(this.birds[i].alive) {
-				this.renderer.render_bird(this.birds[i], this.images.bird, this.config.animate_bird, this.config.debug_mode);
+		if(!this.config.only_show_best_bird || this.previous_scores.length != this.generation.length) {
+			for(let i = 0; i < this.birds.length; i++) {
+				if(this.birds[i].alive) {
+					this.renderer.render_bird(this.birds[i], this.images.bird, this.config.animate_bird, this.config.debug_mode);
+				}
 			}
+		} else if(this.birds.some(bird => bird.alive)) {
+			const bird = this.birds[this.previous_scores.indexOf(Math.max(...this.previous_scores))]
+
+			this.renderer.render_bird(bird.alive ? bird : this.birds.filter(bird => bird.alive)[0], this.images.bird, this.config.animate_bird, this.config.debug_mode);
 		}
 
 		const font_size = 20;
