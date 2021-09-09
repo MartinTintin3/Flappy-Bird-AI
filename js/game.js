@@ -5,6 +5,27 @@ import { ImageLoader } from "./image_loader.js";
 import { Renderer } from "./renderer.js";
 import { Neuroevolution } from "./neuro_evolution.js";
 
+(function() {
+	var timeouts = [];
+	var messageName = "zero-timeout-message";
+
+	window.addEventListener("message", event => {
+		console.log("handling message");
+		if (event.source == window && event.data == messageName) {
+			event.stopPropagation();
+			if (timeouts.length > 0) {
+				var fn = timeouts.shift();
+				fn();
+			}
+		}
+	}, true);
+
+	window.setZeroTimeout = fn => {
+		timeouts.push(fn);
+		window.postMessage(messageName, "*");
+	}
+})();
+
 export class Game {
 	constructor(ctx) {
 		this.config = new Config();
@@ -19,6 +40,7 @@ export class Game {
 			x: -10,
 			y: -10,
 		};
+
 		this.paused = false;
 	}
 
@@ -75,9 +97,15 @@ export class Game {
 			}
 		});
 
-		setTimeout(() => {
-			this.update();
-		}, 1000 / (this.config.tps * this.config.speed_multiplier));
+		if(this.config.speed_multiplier > 0) {
+			setTimeout(() => {
+				this.update();
+			}, 1000 / (this.config.tps * this.config.speed_multiplier));
+		} else {
+			setZeroTimeout(function(){
+				this.update();
+			});
+		}
 
 		requestAnimationFrame(() => {
 			this.render();
@@ -140,9 +168,16 @@ export class Game {
 			};
 		}
 
-		setTimeout(() => {
-			this.update();
-		}, 1000 / (this.config.tps * this.config.speed_multiplier));
+		if(this.config.speed_multiplier > 0) {
+			setTimeout(() => {
+				this.update();
+			}, 1000 / (this.config.tps * this.config.speed_multiplier));
+		} else {
+			const self = this;
+			setZeroTimeout(function(){
+				self.update();
+			});
+		}
 	}
 
 	render() {
