@@ -41,6 +41,10 @@ export class Game {
 		};
 		this.previous_scores = [];
 		this.paused = false;
+
+		window.addEventListener("blur", e => {
+			e.preventDefault();
+		});
 	}
 
 	restart() {
@@ -99,11 +103,12 @@ export class Game {
 
 		if(this.config.speed_multiplier > 0) {
 			setTimeout(() => {
-				this.update();
+				this.update(this.paused, false);
 			}, 1000 / (this.config.tps * this.config.speed_multiplier));
 		} else {
+			const self = this;
 			setZeroTimeout(function(){
-				this.update();
+				self.update(self.paused, false);
 			});
 		}
 
@@ -112,8 +117,8 @@ export class Game {
 		});
 	}
 
-	update() {
-		if(!this.paused) {
+	update(paused, dont_call_self) {
+		if(!paused) {
 			this.background_x += this.config.background_speed;
 
 			for(let i = 0; i < this.birds.length; i++) {
@@ -168,15 +173,17 @@ export class Game {
 			};
 		}
 
-		if(this.config.speed_multiplier > 0) {
-			setTimeout(() => {
-				this.update();
-			}, 1000 / (this.config.tps * this.config.speed_multiplier));
-		} else {
-			const self = this;
-			setZeroTimeout(function(){
-				self.update();
-			});
+		if(!dont_call_self) {
+			if(this.config.speed_multiplier > 0) {
+				setTimeout(() => {
+					this.update(this.paused, false);
+				}, 1000 / (this.config.tps * this.config.speed_multiplier));
+			} else {
+				const self = this;
+				setZeroTimeout(function(){
+					self.update(self.paused, false);
+				});
+			}
 		}
 	}
 
