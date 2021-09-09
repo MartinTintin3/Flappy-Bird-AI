@@ -30,8 +30,8 @@ export class Game {
 		this.config = new Config();
 		this.ctx = ctx || document.body.appendChild(document.createElement("canvas")).getContext("2d");
 		this.renderer = new Renderer(this.ctx);
-		this.ctx.canvas.width = this.config.width * 2;
-		this.ctx.canvas.height = this.config.height * 2;
+		this.ctx.canvas.width = this.config.width * window.devicePixelRatio;
+		this.ctx.canvas.height = this.config.height * window.devicePixelRatio;
 		this.ctx.canvas.style.width = this.config.width + "px";
 		this.ctx.canvas.style.height = this.config.height + "px";
 		this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
