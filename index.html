@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			@font-face {
+				font-family: "Flappy Bird";
+				src: url('./assets/font.ttf');
+			}
+		</style>
+		<title>Flappy Bird</title>
+	</head>
+	<body>
+		<canvas id="canvas" width="500" height="512" style="border: 1px solid black;"></canvas>
+		<div id="speed-btn-div">
+			<label for="speed" id="speed-label">1.00x Speed</label>
+			<input type="range" min="0.25" max="10" step="0.25" value="1" id="speed" name="speed">
+			<label for="debug-mode">Debug Mode:</label>
+			<input type="checkbox" name="debug" id="debug-mode">
+			<button id="reset-btn">Reset Neural Network</button>
+		</div>
+		<script src="./js/main.js" type="module"></script>
+	</body>
+</html>
